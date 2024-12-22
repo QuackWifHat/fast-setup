@@ -1,0 +1,16 @@
+- name: "Install a bunch of dependencies."
+  hosts: localhost
+  connection: local
+  become: true
+  get_facts: false
+
+  tasks:
+    - name: "Install all packages."
+      register: aptout
+      apt:
+        state: latest
+        update_cache: true
+        name: 
+          - cmake
+          - libncurses5-dev
+          - libncursesw5-dev

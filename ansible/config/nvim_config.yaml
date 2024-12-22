@@ -1,0 +1,12 @@
+- name: "Installing nvim config files."
+  hosts: localhosts
+  connection: local
+  gather_facts: false
+
+  vars:
+    user_home: "{{ lookup('env', 'HOME') | default(lookup('env', 'USERPROFILE')) }}"
+    config_folder: "{{ playbook_dir }}/../../data/configs/"
+
+  tasks:
+    - name: "Clear exisiting configuration."
+      

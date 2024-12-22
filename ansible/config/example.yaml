@@ -1,0 +1,19 @@
+- name: "Practice"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    desktop_folder: "{{ lookup('env', 'HOME') | default(lookup('env', 'USERPROFILE')) }}/Desktop/"
+
+  tasks:
+    - name: "Create a folder in desktop"
+      file:
+        path: "{{ desktop_folder }}/some-directory/"
+        state: directory
+        mode: 0755
+
+    - name: "Copy a file into the new folder"
+      copy:
+        src: "{{ desktop_folder }}/example/copy.txt"
+        dest: "{{ desktop_folder }}/some-directory/"

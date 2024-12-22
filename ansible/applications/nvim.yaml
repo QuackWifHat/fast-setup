@@ -1,0 +1,54 @@
+- name: "Fresh install of nvim"
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: false
+
+  vars:
+    user_home: "{{ lookup('env', 'HOME') | default(lookup('env', 'USERPROFILE')) }}"
+
+  tasks:
+    - name: "Install dependencies."
+      register: aptout
+      apt:
+        state: latest
+        update_cache: true
+        name:
+          - ninja-build
+          - gettext
+          - cmake
+          - unzip
+          - curl
+          - build-essential
+
+    - name: "Download NVIM source."
+      get_url:
+        url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+        dest: /tmp/nvim.tar.gz
+
+    - name: "Uncompress Tarball."
+      unarchvie:
+        src: /tmp/nvim.tar.gz
+        dest: /tmp/
+
+    - name: "Make Build Folder."
+      command:
+        cmd: mkdir build
+        chdir: /tmp/nvim-linux64/
+
+    - name: "Install NVIM."
+      shell:
+        cmd: cmake .. && make && make install
+        chdir: /tmp/nvim-linux64/build/
+
+    - name: "Remove NVIM Tarball."
+      file:
+        path: /tmp/nvim-linux64.tar.gz
+        state: absent
+
+    - name: "Remove NVIM Build Files."
+      file:
+        path: /tmp/nvim-linux64/
+        state: absent
+
+      

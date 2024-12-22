@@ -1,0 +1,34 @@
+- name: "Install Zathura w/ Mupdf Extension"
+  hosts: localhost
+  connection: local
+  become: true
+  gather_facts: false
+
+  tasks:
+    # Installing dependencies
+    - name: "Download Girara Source."
+      get_url:
+        url: https://pwmt.org/projects/girara/download/girara-0.4.5.tar.xz
+        dest: /tmp/girara.tar.xz
+
+    - name: "Uncompress Tarball."
+      unarchive:
+        src: /tmp/girara.tar.xz
+        dest: /tmp/
+
+    - name: "Make Build Folder"
+      command:
+        cmd: mkdir build
+        chdir: /tmp/girara-0.4.5
+
+    - name: "Build Girara"
+      shell:
+        cmd: meson build
+        chdir: /tmp/girara-0.4.5/
+
+    - name: "Make Girara"
+      shell:
+        cmd: ninja && ninja install
+        chdir: /tmp/girara-0.4.5/build/
+
+    - name:
